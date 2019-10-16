@@ -98,6 +98,7 @@ LIBPYTHON3_CINCLUDES-y   += $(LIBPYTHON3_COMMON_INCLUDES-y)
 LIBPYTHON3_CXXINCLUDES-y += $(LIBPYTHON3_COMMON_INCLUDES-y)
 
 LIBPYTHON3_SRCS-y += $(LIBPYTHON3_BASE)/modules_config.c|unikraft
+LIBPYTHON3_SRCS-y += $(LIBPYTHON3_BASE)/stubs.c|unikraft
 
 ################################################################################
 # Python core
