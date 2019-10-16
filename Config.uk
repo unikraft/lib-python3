@@ -19,4 +19,17 @@ menuconfig LIBPYTHON3
 	select LWIP_IPV6
 
 if LIBPYTHON3
+
+config LIBPYTHON3_PYTHONHOME
+	string "Python home directory"
+	default "/lib/python3.7"
+
+config LIBPYTHON3_PYTHONPATH
+	string "Python path"
+	default "/lib/python3.7"
+
+config LIBPYTHON3_TMPDIR
+	string "Temp directory location"
+	default "/tmp"
+
 endif
