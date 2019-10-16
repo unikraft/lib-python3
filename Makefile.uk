@@ -100,6 +100,7 @@ LIBPYTHON3_CXXINCLUDES-y += $(LIBPYTHON3_COMMON_INCLUDES-y)
 LIBPYTHON3_SRCS-y += $(LIBPYTHON3_BASE)/init.c|unikraft
 LIBPYTHON3_SRCS-y += $(LIBPYTHON3_BASE)/modules_config.c|unikraft
 LIBPYTHON3_SRCS-y += $(LIBPYTHON3_BASE)/stubs.c|unikraft
+LIBPYTHON3_SRCS-$(CONFIG_LIBPYTHON3_MAIN_FUNCTION) += $(LIBPYTHON3_BASE)/main.c|unikraft
 
 ################################################################################
 # Python core

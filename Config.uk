@@ -32,4 +32,8 @@ config LIBPYTHON3_TMPDIR
 	string "Temp directory location"
 	default "/tmp"
 
+config LIBPYTHON3_MAIN_FUNCTION
+	bool "Provide main function"
+	default n
+
 endif
