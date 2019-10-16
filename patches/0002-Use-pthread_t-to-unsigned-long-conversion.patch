@@ -1,0 +1,40 @@
+From 81399f6373ea09bfed792b477f5a55e721ba4b8b Mon Sep 17 00:00:00 2001
+From: Vlad-Andrei Badoiu <vlad_andrei.badoiu@stud.acs.upb.ro>
+Date: Sat, 12 Oct 2019 16:28:02 +0300
+Subject: [PATCH] Use pthread_t to unsigned long conversion
+
+Signed-off-by: Vlad-Andrei Badoiu <vlad_andrei.badoiu@stud.acs.upb.ro>
+Signed-off-by: Costin Lupu <costin.lupu@cs.pub.ro>
+---
+ Python/thread_pthread.h | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/Python/thread_pthread.h b/Python/thread_pthread.h
+index f79f9b9..55d4c70 100644
+--- a/Python/thread_pthread.h
++++ b/Python/thread_pthread.h
+@@ -241,7 +241,7 @@ PyThread_start_new_thread(void (*func)(void *), void *arg)
+ #if SIZEOF_PTHREAD_T <= SIZEOF_LONG
+     return (unsigned long) th;
+ #else
+-    return (unsigned long) *(unsigned long *) &th;
++    return pthread_to_unsigned_long(&th);
+ #endif
+ }
+ 
+@@ -258,7 +258,12 @@ PyThread_get_thread_ident(void)
+     if (!initialized)
+         PyThread_init_thread();
+     threadid = pthread_self();
++
++#if SIZEOF_PTHREAD_T <= SIZEOF_LONG
+     return (unsigned long) threadid;
++#else
++    return pthread_to_unsigned_long((pthread_t *) &threadid);
++#endif
+ }
+ 
+ void
+-- 
+2.20.1
+

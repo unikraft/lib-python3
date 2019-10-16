@@ -1,0 +1,26 @@
+From 47e57bc46cab3c92f4137bf183534d593ebea211 Mon Sep 17 00:00:00 2001
+From: Vlad-Andrei Badoiu <vlad_andrei.badoiu@stud.acs.upb.ro>
+Date: Mon, 2 Sep 2019 04:23:30 +0300
+Subject: [PATCH] Undefine HAVE_FORK and HAVE_EXECVE
+
+Signed-off-by: Vlad-Andrei Badoiu <vlad_andrei.badoiu@stud.acs.upb.ro>
+---
+ Modules/posixmodule.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/Modules/posixmodule.c b/Modules/posixmodule.c
+index b758e76..aed9e22 100644
+--- a/Modules/posixmodule.c
++++ b/Modules/posixmodule.c
+@@ -175,8 +175,6 @@ corresponding Unix manual entries for more information on calls.");
+ #define fsync _commit
+ #else
+ /* Unix functions that the configure script doesn't check for */
+-#define HAVE_EXECV      1
+-#define HAVE_FORK       1
+ #if defined(__USLC__) && defined(__SCO_VERSION__)       /* SCO UDK Compiler */
+ #define HAVE_FORK1      1
+ #endif
+-- 
+2.20.1
+
