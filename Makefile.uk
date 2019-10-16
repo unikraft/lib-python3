@@ -97,6 +97,8 @@ LIBPYTHON3_COMMON_CXXFLAGS-y += $(LIBPYTHON3_COMMON_DEFINES-y)
 LIBPYTHON3_CINCLUDES-y   += $(LIBPYTHON3_COMMON_INCLUDES-y)
 LIBPYTHON3_CXXINCLUDES-y += $(LIBPYTHON3_COMMON_INCLUDES-y)
 
+LIBPYTHON3_SRCS-y += $(LIBPYTHON3_BASE)/modules_config.c|unikraft
+
 ################################################################################
 # Python core
 ################################################################################
