@@ -36,4 +36,43 @@ config LIBPYTHON3_MAIN_FUNCTION
 	bool "Provide main function"
 	default n
 
+
+menuconfig LIBPYTHON3_EXTENSIONS
+	bool "Extensions"
+	default n
+
+if LIBPYTHON3_EXTENSIONS
+config LIBPYTHON3_EXTENSION_EXPAT
+	bool "Expat XML parser"
+	default y
+if LIBFFI
+config LIBPYTHON3_EXTENSION_CTYPES
+	bool "ctypes"
+	default y
+endif
+config LIBPYTHON3_EXTENSION_LIBMPDEC
+	bool "Decimal operations with libmpdec"
+	default y
+if LIBSQLITE
+config LIBPYTHON3_EXTENSION_SQLITE
+	bool "sqlite"
+	default y
+endif
+if LIBSSL
+config LIBPYTHON3_EXTENSION_SSL
+	bool "SSL"
+	default y
+endif
+if LIBUUID
+config LIBPYTHON3_EXTENSION_UUID
+	bool "UUID"
+	default y
+endif
+if LIBZLIB
+config LIBPYTHON3_EXTENSION_ZLIB
+	bool "zlib"
+	default y
+endif
+endif
+
 endif
