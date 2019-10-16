@@ -465,3 +465,28 @@ LIBPYTHON3_PREPARED_DEPS = \
 $(LIBPYTHON3_BUILD)/.prepared: $(LIBPYTHON3_PREPARED_DEPS)
 
 UK_PREPARE += $(LIBPYTHON3_BUILD)/.prepared
+
+################################################################################
+# Root filesystem
+################################################################################
+
+# Build root filesystem for Python interpreter
+PYTHON_ROOTFS = $(APP_BASE)/$(path)
+
+# Create virtual environment
+$(PYTHON_ROOTFS)/.keep:
+	python3 -m venv $(PYTHON_ROOTFS) && touch $@
+
+# Configure origin
+$(PYTHON_ROOTFS)/.configured: $(PYTHON_ROOTFS)/.keep
+	mkdir -p $(PYTHON_ROOTFS) &>/dev/null
+	cd $(LIBPYTHON3_SRC) && ./configure --prefix=$(shell realpath $(APP_BASE)/$(path)) && touch $@
+
+# Install Python standard library into virtual environment
+$(PYTHON_ROOTFS)/.done: $(PYTHON_ROOTFS)/.configured
+	cd $(LIBPYTHON3_SRC) && make libinstall
+	cp $(LIBPYTHON3_BASE)/_sysconfigdata.py $(PYTHON_ROOTFS)/lib/python3.7/
+	touch $@
+
+.PHONY: python-rootfs
+python-rootfs: $(PYTHON_ROOTFS)/.done
