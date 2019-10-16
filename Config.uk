@@ -1,0 +1,22 @@
+menuconfig LIBPYTHON3
+	bool "Python 3"
+	default n
+	select LIBNEWLIBC
+	select LIBNEWLIBC_WANT_IO_C99_FORMATS if LIBNEWLIBC
+	select LIBNEWLIBC_LINUX_ERRNO_EXTENSIONS if LIBNEWLIBC
+	select LIBUKDEBUG
+	select LIBUKALLOC
+	select LIBUKSCHED
+	select UKUNISTD
+	select UKSYSINFO
+	select POSIX_LIBDL
+	select LIBSYSCALL_SHIM
+	select LIBVFSCORE
+	select LIBPTHREAD_EMBEDDED
+	select LIBLWIP
+	select LWIP_DHCP
+	select LWIP_DNS
+	select LWIP_IPV6
+
+if LIBPYTHON3
+endif
