@@ -7,9 +7,9 @@ menuconfig LIBPYTHON3
 	select LIBUKDEBUG
 	select LIBUKALLOC
 	select LIBUKSCHED
-	select UKUNISTD
 	select UKSYSINFO
-	select POSIX_LIBDL
+	select LIBPOSIX_USER
+	select LIBPOSIX_LIBDL
 	select LIBSYSCALL_SHIM
 	select LIBVFSCORE
 	select LIBPTHREAD_EMBEDDED
