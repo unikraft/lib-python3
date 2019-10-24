@@ -41,6 +41,11 @@ menuconfig LIBPYTHON3_EXTENSIONS
 	bool "Extensions"
 	default n
 
+if LIBBZIP2
+config LIBPYTHON3_EXTENSION_BZIP2
+	bool "bzip2"
+	default y
+endif
 if LIBPYTHON3_EXTENSIONS
 config LIBPYTHON3_EXTENSION_EXPAT
 	bool "Expat XML parser"

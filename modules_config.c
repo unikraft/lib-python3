@@ -215,7 +215,9 @@ struct _inittab _PyImport_Inittab[] = {
     {"binascii", PyInit_binascii},
     {"_bisect", PyInit__bisect},
     {"_blake2", PyInit__blake2},
-//    {"_bz2", PyInit__bz2},
+#if CONFIG_LIBPYTHON3_EXTENSION_BZIP2
+    {"_bz2", PyInit__bz2},
+#endif
     {"cmath", PyInit_cmath},
     {"_codecs", PyInit__codecs},
     {"_collections", PyInit__collections},

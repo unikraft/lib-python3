@@ -313,7 +313,7 @@ else
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_blake2/impl/blake2b-ref.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_blake2/impl/blake2s-ref.c
 endif
-#LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_bz2module.c
+LIBPYTHON3_EXTENSIONS_SRCS-$(CONFIG_LIBPYTHON3_EXTENSION_BZIP2) += $(LIBPYTHON3_SRC)/Modules/_bz2module.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/cjkcodecs/_codecs_cn.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/cjkcodecs/_codecs_hk.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/cjkcodecs/_codecs_iso2022.c
