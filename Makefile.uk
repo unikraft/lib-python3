@@ -475,7 +475,7 @@ UK_PREPARE += $(LIBPYTHON3_BUILD)/.prepared
 PYTHON_ROOTFS = $(APP_BASE)/$(path)
 
 # Create virtual environment
-$(PYTHON_ROOTFS)/.keep:
+$(PYTHON_ROOTFS)/.keep: $(LIBPYTHON3_BUILD)/.origin
 	python3 -m venv $(PYTHON_ROOTFS) && touch $@
 
 # Configure origin
