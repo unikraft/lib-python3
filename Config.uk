@@ -7,7 +7,7 @@ menuconfig LIBPYTHON3
 	select LIBUKDEBUG
 	select LIBUKALLOC
 	select LIBUKSCHED
-	select UKSYSINFO
+	select LIBPOSIX_SYSINFO
 	select LIBPOSIX_USER
 	select LIBPOSIX_LIBDL
 	select LIBSYSCALL_SHIM
