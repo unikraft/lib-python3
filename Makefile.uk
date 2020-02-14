@@ -76,7 +76,7 @@ LIBPYTHON3_SUPPRESS_FLAGS += -Wno-unused-parameter \
 	-Wno-unused-variable -Wno-unused-value -Wno-unused-function \
 	-Wno-missing-field-initializers -Wno-implicit-fallthrough \
 	-Wno-cast-function-type -Wno-stringop-truncation \
-	-Wno-char-subscripts -Wno-sign-compare
+	-Wno-char-subscripts -Wno-sign-compare -Wno-maybe-uninitialized
 LIBPYTHON3_SUPRESS_CFLAGS-y   += $(LIBPYTHON3_SUPPRESS_FLAGS) -Wno-pointer-to-int-cast -Wno-int-to-pointer-cast
 LIBPYTHON3_SUPRESS_CXXFLAGS-y += $(LIBPYTHON3_SUPPRESS_FLAGS)
 
