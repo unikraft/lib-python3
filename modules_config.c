@@ -46,6 +46,7 @@ extern PyObject* PyInit_zipimport(void);
 extern PyObject* PyInit_faulthandler(void);
 extern PyObject* PyInit__tracemalloc(void);
 extern PyObject* PyInit__symtable(void);
+extern PyObject* PyInit__sqlite3(void);
 extern PyObject* PyInit_xxsubtype(void);
 
 /* Unikraft Marker start */
@@ -290,7 +291,7 @@ struct _inittab _PyImport_Inittab[] = {
     {"_socket", PyInit__socket},
 //TODO enable    {"spwd", PyInit_spwd},
 #if CONFIG_LIBPYTHON3_EXTENSION_SQLITE
-    {"sqlite", PyInit__sqlite3},
+    {"sqlite3", PyInit__sqlite3},
 #endif
 #if CONFIG_LIBPYTHON3_EXTENSION_SSL
     {"_ssl", PyInit__ssl},
