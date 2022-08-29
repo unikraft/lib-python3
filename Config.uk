@@ -13,6 +13,8 @@ menuconfig LIBPYTHON3
 	select LIBSYSCALL_SHIM
 	select LIBVFSCORE
 	select LIBPTHREAD_EMBEDDED
+	select LIBPOSIX_SOCKET
+	select LIBPOSIX_EVENT
 	select LIBLWIP
 	select LWIP_DHCP
 	select LWIP_DNS
