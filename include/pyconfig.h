@@ -390,11 +390,17 @@
 /* #undef HAVE_GCC_ASM_FOR_MC68881 */
 
 /* Define if we can use x64 gcc inline assembler */
+
+#if defined(__x86_64__)
 #define HAVE_GCC_ASM_FOR_X64 1
+#endif
 
 /* Define if we can use gcc inline assembler to get and set x87 control word
    */
+
+#if defined(__x86_64__)
 #define HAVE_GCC_ASM_FOR_X87 1
+#endif
 
 /* Define if your compiler provides __uint128_t */
 #define HAVE_GCC_UINT128_T 1
