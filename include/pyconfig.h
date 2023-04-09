@@ -1387,7 +1387,11 @@
 #define SIZEOF_PTHREAD_KEY_T 4
 
 /* The size of `pthread_t', as computed by sizeof. */
+#ifdef CONFIG_LIBPTHREAD_EMBEDDED
+#define SIZEOF_PTHREAD_T 12
+#else
 #define SIZEOF_PTHREAD_T 8
+#endif
 
 /* The size of `short', as computed by sizeof. */
 #define SIZEOF_SHORT 2
