@@ -460,10 +460,10 @@ LIBPYTHON3_EXTENSIONS_SRCS-$(CONFIG_LIBPYTHON3_EXTENSION_ZLIB) += $(LIBPYTHON3_S
 ################################################################################
 
 # Customize config: configure stack size
-$(APP_BASE)/.config.orig: $(APP_BASE)/.config
+$(APP_BASE)/.config.orig:
 	$(call verbose_cmd,CONFIG,libpython3: $(notdir $@), \
-		cp $(APP_BASE)/.config $@ && \
-		sed -i 's/^CONFIG_STACK_SIZE_PAGE_ORDER=.*$$/CONFIG_STACK_SIZE_PAGE_ORDER=10/g' $(APP_BASE)/.config)
+		cp $(C) $@ && \
+		sed -i 's/^CONFIG_STACK_SIZE_PAGE_ORDER=.*$$/CONFIG_STACK_SIZE_PAGE_ORDER=10/g' $(C))
 
 LIBPYTHON3_PREPARED_DEPS = \
 	$(APP_BASE)/.config.orig \
