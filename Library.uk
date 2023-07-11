@@ -1,0 +1,5 @@
+name        := "python3"
+description := "A high-level, general-purpose programming language."
+homepage    := "https://python.org/"
+license     := "PSF-2.0"
+version     := 3.7.4 sha256:d63e63e14e6d29e17490abbe6f7d17afb3db182dbd801229f14e55f4157c4ba3 https://www.python.org/ftp/python/3.7.4/Python-3.7.4.tgz
