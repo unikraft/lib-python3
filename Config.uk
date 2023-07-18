@@ -81,6 +81,12 @@ config LIBPYTHON3_EXTENSION_ZLIB
 	bool "zlib"
 	default y
 endif
+
+if LIBPYTHON_NUMPY
+config LIBPYTHON3_EXTENSION_NUMPY
+    bool "numpy"
+    default y
 endif
 
+endif
 endif

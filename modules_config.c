@@ -162,6 +162,30 @@ extern PyObject* PyInit__ast(void);
 extern PyObject* _PyWarnings_Init(void);
 extern PyObject* PyInit__string(void);
 
+#if CONFIG_LIBPYTHON3_EXTENSION_NUMPY
+/* Numpy */
+extern PyObject* PyInit_bit_generator(void);
+extern PyObject* PyInit__bounded_integers(void);
+extern PyObject* PyInit__common(void);
+extern PyObject* PyInit__generator(void);
+extern PyObject* PyInit_lapack_lite(void);
+extern PyObject* PyInit__mt19937(void);
+extern PyObject* PyInit_mtrand(void);
+extern PyObject* PyInit__multiarray_tests(void);
+extern PyObject* PyInit__multiarray_umath(void);
+extern PyObject* PyInit__operand_flag_tests(void);
+extern PyObject* PyInit__pcg64(void);
+extern PyObject* PyInit__philox(void);
+extern PyObject* PyInit__pocketfft_internal(void);
+extern PyObject* PyInit__rational_tests(void);
+extern PyObject* PyInit__sfc64(void);
+extern PyObject* PyInit__simd(void);
+extern PyObject* PyInit__struct_ufunc_tests(void);
+extern PyObject* PyInit__umath_linalg(void);
+extern PyObject* PyInit__umath_tests(void);
+/* Numpy end */
+#endif
+
 struct _inittab _PyImport_Inittab[] = {
 
     {"posix", PyInit_posix},
@@ -337,6 +361,28 @@ struct _inittab _PyImport_Inittab[] = {
 #endif
     {"_zoneinfo", PyInit__zoneinfo},
 /* Unikraft Marker end */
+
+#if CONFIG_LIBPYTHON3_EXTENSION_NUMPY
+    {"numpy_random_bit_generator", PyInit_bit_generator},
+    {"numpy_random__bounded_integers", PyInit__bounded_integers},
+    {"numpy_random__common", PyInit__common},
+    {"numpy_random__generator", PyInit__generator},
+    {"numpy_linalg_lapack_lite", PyInit_lapack_lite},
+    {"numpy_random__mt19937", PyInit__mt19937},
+    {"numpy_random_mtrand", PyInit_mtrand},
+    {"numpy_core__multiarray_tests", PyInit__multiarray_tests},
+    {"numpy_core__multiarray_umath", PyInit__multiarray_umath},
+    {"numpy_core__operand_flag_tests", PyInit__operand_flag_tests},
+    {"numpy_random__pcg64", PyInit__pcg64},
+    {"numpy_random__philox", PyInit__philox},
+    {"numpy_fft__pocketfft_internal", PyInit__pocketfft_internal},
+    {"numpy_core__rational_tests", PyInit__rational_tests},
+    {"numpy_random__sfc64", PyInit__sfc64},
+    {"numpy_core__simd", PyInit__simd},
+    {"numpy_core__struct_ufunc_tests", PyInit__struct_ufunc_tests},
+    {"numpy_linalg__umath_linalg", PyInit__umath_linalg},
+    {"numpy_core__umath_tests", PyInit__umath_tests},
+#endif
 
     /* Sentinel */
     {0, 0}
