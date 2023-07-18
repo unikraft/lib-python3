@@ -1,0 +1,91 @@
+From 890b505b8eabc2313514dbcad3568bf66d3a3a36 Mon Sep 17 00:00:00 2001
+From: Andrei Tatar <andrei@unikraft.io>
+Date: Mon, 12 Jun 2023 13:32:42 +0200
+Subject: [PATCH 1/5] asyncio: Replace unix sockets with pipes
+
+The default asyncio event loop for *nix systems uses a pair of connected
+AF_UNIX sockets for internal synchronization.
+Because AF_UNIX sockets are not (yet) supported in Unikraft, this patch
+replaces them with pipes.
+
+Signed-off-by: Andrei Tatar <andrei@unikraft.io>
+---
+ Lib/asyncio/selector_events.py | 31 +++++++++++++++----------------
+ 1 file changed, 15 insertions(+), 16 deletions(-)
+
+diff --git a/Lib/asyncio/selector_events.py b/Lib/asyncio/selector_events.py
+index 8282f28..13afe38 100644
+--- a/Lib/asyncio/selector_events.py
++++ b/Lib/asyncio/selector_events.py
+@@ -9,6 +9,8 @@
+ import collections
+ import errno
+ import functools
++import io
++import os
+ import selectors
+ import socket
+ import warnings
+@@ -91,20 +93,18 @@ def close(self):
+             self._selector = None
+ 
+     def _close_self_pipe(self):
+-        self._remove_reader(self._ssock.fileno())
+-        self._ssock.close()
+-        self._ssock = None
+-        self._csock.close()
+-        self._csock = None
++        self._remove_reader(self._spipe.fileno())
++        self._spipe.close()
++        self._spipe = None
++        self._cpipe.close()
++        self._cpipe = None
+         self._internal_fds -= 1
+ 
+     def _make_self_pipe(self):
+-        # A self-socket, really. :-)
+-        self._ssock, self._csock = socket.socketpair()
+-        self._ssock.setblocking(False)
+-        self._csock.setblocking(False)
++        self._spipe, self._cpipe = map(io.FileIO, os.pipe2(os.O_NONBLOCK),
++                                       ('r', 'w'))
+         self._internal_fds += 1
+-        self._add_reader(self._ssock.fileno(), self._read_from_self)
++        self._add_reader(self._spipe.fileno(), self._read_from_self)
+ 
+     def _process_self_data(self, data):
+         pass
+@@ -112,7 +112,7 @@ def _process_self_data(self, data):
+     def _read_from_self(self):
+         while True:
+             try:
+-                data = self._ssock.recv(4096)
++                data = self._spipe.read(4096)
+                 if not data:
+                     break
+                 self._process_self_data(data)
+@@ -127,17 +127,16 @@ def _write_to_self(self):
+         # running.  Guard for self._csock being None or closed.  When
+         # a socket is closed, send() raises OSError (with errno set to
+         # EBADF, but let's not rely on the exact error code).
+-        csock = self._csock
+-        if csock is None:
++        cpipe = self._cpipe
++        if cpipe is None:
+             return
+ 
+         try:
+-            csock.send(b'\0')
++            cpipe.write(b'\0')
+         except OSError:
+             if self._debug:
+                 logger.debug("Fail to write a null byte into the "
+-                             "self-pipe socket",
+-                             exc_info=True)
++                             "self-pipe", exc_info=True)
+ 
+     def _start_serving(self, protocol_factory, sock,
+                        sslcontext=None, server=None, backlog=100,
+-- 
+2.41.0
+

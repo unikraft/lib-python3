@@ -4,8 +4,10 @@
 #
 #  Authors: Vlad-Andrei Badoiu <vlad_andrei.badoiu@stud.acs.upb.ro>
 #           Costin Lupu <costin.lupu@cs.pub.ro>
+#           Andrei Tatar <andrei@unikraft.io>
 #
 #  Copyright (c) 2019, University Politehnica of Bucharest. All rights reserved.
+#  Copyright (c) 2023, Unikraft GmbH and The Unikraft Authors.
 #
 #  Redistribution and use in source and binary forms, with or without
 #  modification, are permitted provided that the following conditions
@@ -43,8 +45,8 @@ $(eval $(call addlib_s,libpython3_extensions,$(CONFIG_LIBPYTHON3)))
 ################################################################################
 # Sources
 ################################################################################
-LIBPYTHON3_VERSION=3.7
-LIBPYTHON3_REVISION=4
+LIBPYTHON3_VERSION=3.10
+LIBPYTHON3_REVISION=11
 LIBPYTHON3_VERSION_LONG=$(LIBPYTHON3_VERSION).$(LIBPYTHON3_REVISION)
 LIBPYTHON3_BASENAME=Python-$(LIBPYTHON3_VERSION_LONG)
 LIBPYTHON3_URL=https://www.python.org/ftp/python/$(LIBPYTHON3_VERSION_LONG)/$(LIBPYTHON3_BASENAME).tgz
@@ -61,22 +63,34 @@ LIBPYTHON3_SRC = $(LIBPYTHON3_ORIGIN)/$(LIBPYTHON3_BASENAME)
 # Library includes
 ################################################################################
 LIBPYTHON3_GLOBAL_INCLUDES-y += -I$(LIBPYTHON3_BASE)/include
-LIBPYTHON3_GLOBAL_INCLUDES-y += -I$(LIBPYTHON3_SRC)
 LIBPYTHON3_GLOBAL_INCLUDES-y += -I$(LIBPYTHON3_SRC)/Include
-CINCLUDES-y   += $(LIBPYTHON3_GLOBAL_INCLUDES-y)
-CXXINCLUDES-y += $(LIBPYTHON3_GLOBAL_INCLUDES-y)
+
+LIBPYTHON3_COMMON_INCLUDES-y += -I$(LIBPYTHON3_SRC)
+LIBPYTHON3_COMMON_INCLUDES-y += -I$(LIBPYTHON3_SRC)/Include/internal
+
+CINCLUDES-$(CONFIG_LIBPYTHON3) += $(LIBPYTHON3_GLOBAL_INCLUDES-y)
+CXXINCLUDES-$(CONFIG_LIBPYTHON3) += $(LIBPYTHON3_GLOBAL_INCLUDES-y)
 
 ################################################################################
 # Common flags
 ################################################################################
 # Suppress flags
-LIBPYTHON3_SUPPRESS_FLAGS += -Wno-unused-parameter \
-	-Wno-unused-variable -Wno-unused-value -Wno-unused-function \
-	-Wno-missing-field-initializers -Wno-implicit-fallthrough \
-	-Wno-cast-function-type -Wno-stringop-truncation \
-	-Wno-char-subscripts -Wno-sign-compare -Wno-maybe-uninitialized
-LIBPYTHON3_SUPRESS_CFLAGS-y   += $(LIBPYTHON3_SUPPRESS_FLAGS) -Wno-pointer-to-int-cast -Wno-int-to-pointer-cast
-LIBPYTHON3_SUPRESS_CXXFLAGS-y += $(LIBPYTHON3_SUPPRESS_FLAGS)
+LIBPYTHON3_SUPPRESS_FLAGS-y += -Wno-unused-parameter
+LIBPYTHON3_SUPPRESS_FLAGS-y += -Wno-unused-variable
+LIBPYTHON3_SUPPRESS_FLAGS-y += -Wno-unused-value
+LIBPYTHON3_SUPPRESS_FLAGS-y += -Wno-unused-function
+LIBPYTHON3_SUPPRESS_FLAGS-y += -Wno-missing-field-initializers
+LIBPYTHON3_SUPPRESS_FLAGS-y += -Wno-implicit-fallthrough
+LIBPYTHON3_SUPPRESS_FLAGS-y += -Wno-char-subscripts
+LIBPYTHON3_SUPPRESS_FLAGS-y += -Wno-sign-compare
+LIBPYTHON3_SUPPRESS_FLAGS-$(call have_gcc) += -Wno-stringop-truncation
+LIBPYTHON3_SUPPRESS_FLAGS-$(call have_gcc) += -Wno-maybe-uninitialized
+LIBPYTHON3_SUPPRESS_FLAGS-$(call have_clang) += -Wno-documentation-unknown-command
+LIBPYTHON3_SUPPRESS_FLAGS-$(call clang_version_ge,13,0) += -Wno-cast-function-type
+
+LIBPYTHON3_SUPRESS_CFLAGS-y += $(LIBPYTHON3_SUPPRESS_FLAGS-y) \
+	-Wno-pointer-to-int-cast -Wno-int-to-pointer-cast
+LIBPYTHON3_SUPRESS_CXXFLAGS-y += $(LIBPYTHON3_SUPPRESS_FLAGS-y)
 
 # Common flags
 LIBPYTHON3_COMMON_FLAGS-y    += -fwrapv
@@ -119,23 +133,13 @@ LIBPYTHON3_CORE_CXXFLAGS-y += $(LIBPYTHON3_CORE_DEFINES-y)
 
 #LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Programs/python.c
 
-LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Parser/acceler.c
-LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Parser/bitset.c
-LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Parser/firstsets.c
-LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Parser/grammar1.c
-LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Parser/grammar.c
-LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Parser/listnode.c
-LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Parser/metagrammar.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Parser/myreadline.c
-LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Parser/node.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Parser/parser.c
-LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Parser/parsetok.c
-#LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Parser/parsetok_pgen.c
-LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Parser/pgen.c
-#LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Parser/pgenmain.c
-LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Parser/printgrammar.c
+LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Parser/peg_api.c
+LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Parser/pegen.c
+LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Parser/string_parser.c
+LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Parser/token.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Parser/tokenizer.c
-#LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Parser/tokenizer_pgen.c
 
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/abstract.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/accu.c
@@ -157,7 +161,9 @@ LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/fileobject.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/floatobject.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/frameobject.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/funcobject.c
+LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/genericaliasobject.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/genobject.c
+LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/interpreteridobject.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/iterobject.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/listobject.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/longobject.c
@@ -168,6 +174,7 @@ LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/namespaceobject.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/object.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/obmalloc.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/odictobject.c
+LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/picklebufobject.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/rangeobject.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/setobject.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/sliceobject.c
@@ -176,6 +183,7 @@ LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/tupleobject.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/typeobject.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/unicodectype.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/unicodeobject.c
+LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/unionobject.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Objects/weakrefobject.c
 
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/asdl.c
@@ -191,9 +199,10 @@ LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/context.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/dtoa.c
 #LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/dup2.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/dynamic_annotations.c
-#LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/dynload_dl.c
+#LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/dynload_hpux.c
 #LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/dynload_shlib.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/dynload_stub.c
+#LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/dynload_win.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/errors.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/fileutils.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/formatter_unicode.c
@@ -206,16 +215,18 @@ LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/getcopyright.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/getopt.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/getplatform.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/getversion.c
-LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/graminit.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/hamt.c
+LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/hashtable.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/import.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/importdl.c
+LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/initconfig.c
+LIBPYTHON3_CORE_INITCONFIG_FLAGS-y += -DPLATLIBDIR='"lib"'
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/marshal.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/modsupport.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/mysnprintf.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/mystrtoul.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/pathconfig.c
-LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/peephole.c
+LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/preconfig.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/pyarena.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/pyctype.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/pyfpe.c
@@ -229,8 +240,8 @@ LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/pystrtod.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/Python-ast.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/pythonrun.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/pytime.c
-#LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/strdup.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/structmember.c
+LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/suggestions.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/symtable.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Python/sysmodule.c
 LIBPYTHON3_CORE_SYSMODULE_FLAGS-y += -DABIFLAGS='"m"' -DMULTIARCH=\"x86_64-linux-gnu\"
@@ -253,7 +264,6 @@ LIBPYTHON3_CORE_GETPATH_FLAGS-y += -DPYTHONPATH='"/lib/python$(LIBPYTHON3_VERSIO
 	-DEXEC_PREFIX='""' \
 	-DVERSION='"$(LIBPYTHON3_VERSION)"' \
 	-DVPATH='""'
-LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Modules/hashtable.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_io/bufferedio.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_io/bytesio.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_io/fileio.c
@@ -277,7 +287,6 @@ LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Modules/timemodule.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_tracemalloc.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_weakref.c
 LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Modules/xxsubtype.c
-LIBPYTHON3_CORE_SRCS-y += $(LIBPYTHON3_SRC)/Modules/zipimport.c
 
 ################################################################################
 # Python extensions
@@ -296,6 +305,7 @@ LIBPYTHON3_EXTENSIONS_DEFINES-y  += $(LIBPYTHON3_COMMON_DEFINES-y) -DPy_BUILD_EX
 LIBPYTHON3_EXTENSIONS_CFLAGS-y   += $(LIBPYTHON3_EXTENSIONS_DEFINES-y)
 LIBPYTHON3_EXTENSIONS_CXXFLAGS-y += $(LIBPYTHON3_EXTENSIONS_DEFINES-y)
 
+LIBPYTHON3_EXTENSIONS_CFLAGS-y += -DPy_BUILD_CORE -DPy_BUILD_CORE_MODULE
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/arraymodule.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_asynciomodule.c
 # Audio: LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/audioop.c
@@ -351,16 +361,27 @@ LIBPYTHON3_EXTENSIONS_CINCLUDES-y += -I$(LIBPYTHON3_SRC)/Modules/_decimal/libmpd
 LIBPYTHON3_EXTENSIONS_CFLAGS-y    += -DCONFIG_64 -DANSI
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/_decimal.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/basearith.c
+#LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/bench.c
+#LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/bench_full.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/constants.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/context.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/convolute.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/crt.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/difradix2.c
+#LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/examples/compare.c
+#LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/examples/div.c
+#LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/examples/divmod.c
+#LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/examples/multiply.c
+#LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/examples/pow.c
+#LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/examples/powmod.c
+#LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/examples/shift.c
+#LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/examples/sqrt.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/fnt.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/fourstep.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/io.c
-LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/memory.c
+LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/mpalloc.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/mpdecimal.c
+LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/mpsignal.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/numbertheory.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/sixstep.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_decimal/libmpdec/transpose.c
@@ -369,7 +390,6 @@ ifeq ($(CONFIG_LIBPYTHON3_EXTENSION_EXPAT),y)
 LIBPYTHON3_EXTENSIONS_CINCLUDES-y += -I$(LIBPYTHON3_SRC)/Modules/expat
 LIBPYTHON3_EXTENSIONS_CFLAGS-y    += -DHAVE_EXPAT_CONFIG_H=1 -DXML_POOR_ENTROPY=1 -DUSE_PYEXPAT_CAPI
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_elementtree.c
-LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/expat/loadlibrary.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/expat/xmlparse.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/expat/xmlrole.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/expat/xmltok.c
@@ -391,12 +411,12 @@ LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/mathmodule.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/md5module.c
 # TODO enable LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/mmapmodule.c
 #LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_multiprocessing/multiprocessing.c
+LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_multiprocessing/posixshmem.c
 #LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_multiprocessing/semaphore.c
 #LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/nismodule.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_opcode.c
 # Audio: LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/ossaudiodev.c
 # Windows: LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/overlapped.c
-LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/parsermodule.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_pickle.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_posixsubprocess.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_queuemodule.c
@@ -435,12 +455,15 @@ LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_sqlite/statement.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_sqlite/util.c|sqlite
 endif
 LIBPYTHON3_EXTENSIONS_SRCS-$(CONFIG_LIBPYTHON3_EXTENSION_SSL) += $(LIBPYTHON3_SRC)/Modules/_ssl.c
+LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_statisticsmodule.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_struct.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/syslogmodule.c
 #LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/termios.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_testbuffer.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_testcapimodule.c
+LIBPYTHON3_EXTENSIONS__TESTCAPIMODULE_FLAGS-y += -UPy_BUILD_CORE -UPy_BUILD_CORE_MODULE
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_testimportmultiple.c
+LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_testinternalcapi.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_testmultiphase.c
 #LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/tkappinit.c
 #LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_tkinter.c
@@ -452,6 +475,7 @@ LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/xxmodule.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_xxtestfuzz/fuzzer.c
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_xxtestfuzz/_xxtestfuzz.c
 LIBPYTHON3_EXTENSIONS_SRCS-$(CONFIG_LIBPYTHON3_EXTENSION_ZLIB) += $(LIBPYTHON3_SRC)/Modules/zlibmodule.c
+LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_zoneinfo.c
 
 #LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Misc/coverity_model.c
 

@@ -1,12 +1,12 @@
 menuconfig LIBPYTHON3
 	bool "Python 3"
 	default n
-	select LIBNEWLIBC
-	select LIBNEWLIBC_WANT_IO_C99_FORMATS if LIBNEWLIBC
-	select LIBNEWLIBC_LINUX_ERRNO_EXTENSIONS if LIBNEWLIBC
+	imply LIBMUSL
+	imply LIBCOMPILER_RT
 	select LIBUKDEBUG
 	select LIBUKALLOC
 	select LIBUKSCHED
+	select LIBUKSIGNAL
 	select LIBPOSIX_SYSINFO
 	select LIBPOSIX_USER
 	select LIBPOSIX_LIBDL
@@ -15,20 +15,20 @@ menuconfig LIBPYTHON3
 	select LIBPTHREAD_EMBEDDED
 	select LIBPOSIX_SOCKET
 	select LIBPOSIX_EVENT
-	select LIBLWIP
-	select LWIP_DHCP
-	select LWIP_DNS
-	select LWIP_IPV6
+	imply LIBLWIP
+	imply LWIP_DHCP
+	imply LWIP_DNS
+	imply LWIP_IPV6
 
 if LIBPYTHON3
 
 config LIBPYTHON3_PYTHONHOME
 	string "Python home directory"
-	default "/lib/python3.7"
+	default "/lib/python3.10"
 
 config LIBPYTHON3_PYTHONPATH
 	string "Python path"
-	default "/lib/python3.7"
+	default "/lib/python3.10"
 
 config LIBPYTHON3_TMPDIR
 	string "Temp directory location"
@@ -55,6 +55,7 @@ config LIBPYTHON3_EXTENSION_EXPAT
 if LIBFFI
 config LIBPYTHON3_EXTENSION_CTYPES
 	bool "ctypes"
+	select LIBFFI_NO_TYPES
 	default y
 endif
 config LIBPYTHON3_EXTENSION_LIBMPDEC
