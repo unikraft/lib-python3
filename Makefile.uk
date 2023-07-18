@@ -494,7 +494,11 @@ PYTHON_ROOTFS = $(APP_BASE)/$(path)
 
 # Create virtual environment
 $(PYTHON_ROOTFS)/.keep: $(LIBPYTHON3_BUILD)/.origin
-	python3 -m venv $(PYTHON_ROOTFS) && touch $@
+	@test $(LIBPYTHON3_VERSION) = `python -V | cut -d' ' -f2 | cut -d. -f1,2` || \
+		(echo -e "WARNING: creating virtualenv with wrong python version, pip might not work correctly\nPress return to continue" && read)
+	python3 -m venv $(PYTHON_ROOTFS)
+	find "$(PYTHON_ROOTFS)" -type d -name '__pycache__' | xargs rm -rf
+	touch $@
 
 # Configure origin
 $(PYTHON_ROOTFS)/.configured: $(PYTHON_ROOTFS)/.keep
@@ -504,8 +508,15 @@ $(PYTHON_ROOTFS)/.configured: $(PYTHON_ROOTFS)/.keep
 # Install Python standard library into virtual environment
 $(PYTHON_ROOTFS)/.done: $(PYTHON_ROOTFS)/.configured
 	cd $(LIBPYTHON3_SRC) && make libinstall
-	cp $(LIBPYTHON3_BASE)/_sysconfigdata.py $(PYTHON_ROOTFS)/lib/python3.7/
+	cp $(LIBPYTHON3_BASE)/_sysconfigdata.py $(PYTHON_ROOTFS)/lib/python$(LIBPYTHON3_VERSION)/
+	touch $@
+
+$(PYTHON_ROOTFS)/.compiled: python-rootfs
+	test $(LIBPYTHON3_VERSION) = `python -V | cut -d' ' -f2 | cut -d. -f1,2` || \
+		(echo "ERROR: local Python version is not $(LIBPYTHON3_VERSION), cannot compile .py files" && false)
+	python3 -m compileall -x 'lib2to3/|test/bad' "$(PYTHON_ROOTFS)/lib"
 	touch $@
 
 .PHONY: python-rootfs
 python-rootfs: $(PYTHON_ROOTFS)/.done
+python-rootfs-compiled: $(PYTHON_ROOTFS)/.compiled
