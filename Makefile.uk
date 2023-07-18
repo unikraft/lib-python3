@@ -38,6 +38,12 @@
 ################################################################################
 # Library registration
 ################################################################################
+ifeq ($(CONFIG_LIBPYTHON3),y)
+ifeq ($(shell test $(CONFIG_STACK_SIZE_PAGE_ORDER) -lt 10; echo $$?),0)
+$(error CONFIG_STACK_SIZE_PAGE_ORDER must be at least 10)
+endif
+endif
+
 $(eval $(call addlib_s,libpython3,$(CONFIG_LIBPYTHON3)))
 $(eval $(call addlib_s,libpython3_core,$(CONFIG_LIBPYTHON3)))
 $(eval $(call addlib_s,libpython3_extensions,$(CONFIG_LIBPYTHON3)))
@@ -478,23 +484,6 @@ LIBPYTHON3_EXTENSIONS_SRCS-$(CONFIG_LIBPYTHON3_EXTENSION_ZLIB) += $(LIBPYTHON3_S
 LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Modules/_zoneinfo.c
 
 #LIBPYTHON3_EXTENSIONS_SRCS-y += $(LIBPYTHON3_SRC)/Misc/coverity_model.c
-
-################################################################################
-# Prepare rules
-################################################################################
-
-# Customize config: configure stack size
-$(APP_BASE)/.config.orig:
-	$(call verbose_cmd,CONFIG,libpython3: $(notdir $@), \
-		cp $(C) $@ && \
-		sed -i 's/^CONFIG_STACK_SIZE_PAGE_ORDER=.*$$/CONFIG_STACK_SIZE_PAGE_ORDER=10/g' $(C))
-
-LIBPYTHON3_PREPARED_DEPS = \
-	$(APP_BASE)/.config.orig \
-
-$(LIBPYTHON3_BUILD)/.prepared: $(LIBPYTHON3_PREPARED_DEPS)
-
-UK_PREPARE += $(LIBPYTHON3_BUILD)/.prepared
 
 ################################################################################
 # Root filesystem
