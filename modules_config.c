@@ -42,7 +42,6 @@ extern PyObject* PyInit_time(void);
 extern PyObject* PyInit__thread(void);
 extern PyObject* PyInit__locale(void);
 extern PyObject* PyInit__io(void);
-extern PyObject* PyInit_zipimport(void);
 extern PyObject* PyInit_faulthandler(void);
 extern PyObject* PyInit__tracemalloc(void);
 extern PyObject* PyInit__symtable(void);
@@ -60,6 +59,12 @@ extern PyObject* PyInit__bisect(void);
 extern PyObject* PyInit__blake2(void);
 extern PyObject* PyInit__bz2(void);
 extern PyObject* PyInit_cmath(void);
+extern PyObject* PyInit__codecs_cn(void);
+extern PyObject* PyInit__codecs_hk(void);
+extern PyObject* PyInit__codecs_iso2022(void);
+extern PyObject* PyInit__codecs_jp(void);
+extern PyObject* PyInit__codecs_kr(void);
+extern PyObject* PyInit__codecs_tw(void);
 extern PyObject* PyInit__codecs(void);
 extern PyObject* PyInit__collections(void);
 extern PyObject* PyInit__contextvars(void);
@@ -102,8 +107,8 @@ extern PyObject* PyInit__opcode(void);
 extern PyObject* PyInit__operator(void);
 extern PyObject* PyInit_ossaudiodev(void);
 extern PyObject* PyInit__overlapped(void);
-extern PyObject* PyInit_parser(void);
 extern PyObject* PyInit__pickle(void);
+extern PyObject* PyInit__posixshmem(void);
 extern PyObject* PyInit__posixsubprocess(void);
 extern PyObject* PyInit_pwd(void);
 extern PyObject* PyInit_pyexpat(void);
@@ -120,6 +125,7 @@ extern PyObject* PyInit__sha512(void);
 extern PyObject* PyInit__signal(void);
 extern PyObject* PyInit__socket(void);
 extern PyObject* PyInit_spwd(void);
+extern PyObject* PyInit__statistics(void);
 extern PyObject* PyInit__ssl(void);
 extern PyObject* PyInit__stat(void);
 extern PyObject* PyInit__string(void);
@@ -130,6 +136,8 @@ extern PyObject* PyInit_syslog(void);
 extern PyObject* PyInit_termios(void);
 extern PyObject* PyInit__testbuffer(void);
 extern PyObject* PyInit__testcapi(void);
+extern PyObject* PyInit__testinternalcapi(void);
+extern PyObject* PyInit__testimportmultiple(void);
 extern PyObject* PyInit__thread(void);
 extern PyObject* PyInit_time(void);
 extern PyObject* PyInit__tkinter(void);
@@ -139,13 +147,11 @@ extern PyObject* PyInit__uuid(void);
 extern PyObject* PyInit__weakref(void);
 extern PyObject* PyInit__winapi(void);
 extern PyObject* PyInit_xxlimited(void);
-extern PyObject* PyInit_xxsubtype(void);
 extern PyObject* PyInit__xxtestfuzz(void);
 extern PyObject* PyInit_xx(void);
-extern PyObject* PyInit_zipimport(void);
-#ifdef CONFIG_LIBZLIB
 extern PyObject* PyInit_zlib(void);
-#endif
+extern PyObject* PyInit__zoneinfo(void);
+
 /* Unikraft Marker end */
 /* -- ADDMODULE MARKER 1 -- */
 
@@ -176,7 +182,6 @@ struct _inittab _PyImport_Inittab[] = {
     {"_thread", PyInit__thread},
     {"_locale", PyInit__locale},
     {"_io", PyInit__io},
-    {"zipimport", PyInit_zipimport},
     {"faulthandler", PyInit_faulthandler},
     {"_tracemalloc", PyInit__tracemalloc},
     {"_symtable", PyInit__symtable},
@@ -220,7 +225,13 @@ struct _inittab _PyImport_Inittab[] = {
     {"_bz2", PyInit__bz2},
 #endif
     {"cmath", PyInit_cmath},
+    {"_codecs_cn", PyInit__codecs_cn},
+    {"_codecs_hk", PyInit__codecs_hk},
+    {"_codecs_iso2022", PyInit__codecs_iso2022},
+    {"_codecs_jp", PyInit__codecs_jp},
+    {"_codecs_kr", PyInit__codecs_kr},
     {"_codecs", PyInit__codecs},
+    {"_codecs_tw", PyInit__codecs_tw},
     {"_collections", PyInit__collections},
     {"_contextvars", PyInit__contextvars},
 //TODO    {"_crypt", PyInit__crypt},
@@ -270,8 +281,8 @@ struct _inittab _PyImport_Inittab[] = {
     {"_operator", PyInit__operator},
 /* audio {"ossaudiodev", PyInit_ossaudiodev}, */
 /* Windows {"_overlapped", PyInit__overlapped}, */
-    {"parser", PyInit_parser},
     {"_pickle", PyInit__pickle},
+    {"_posixshmem", PyInit__posixshmem},
     {"_posixsubprocess", PyInit__posixsubprocess},
     {"pwd", PyInit_pwd},
 #if CONFIG_LIBPYTHON3_EXTENSION_EXPAT
@@ -291,11 +302,12 @@ struct _inittab _PyImport_Inittab[] = {
     {"_socket", PyInit__socket},
 //TODO enable    {"spwd", PyInit_spwd},
 #if CONFIG_LIBPYTHON3_EXTENSION_SQLITE
-    {"sqlite3", PyInit__sqlite3},
+    {"_sqlite3", PyInit__sqlite3},
 #endif
 #if CONFIG_LIBPYTHON3_EXTENSION_SSL
     {"_ssl", PyInit__ssl},
 #endif
+    {"_statistics", PyInit__statistics},
     {"_stat", PyInit__stat},
     {"_string", PyInit__string},
     {"_struct", PyInit__struct},
@@ -305,6 +317,8 @@ struct _inittab _PyImport_Inittab[] = {
 //    {"termios", PyInit_termios},
     {"_testbuffer", PyInit__testbuffer},
     {"_testcapi", PyInit__testcapi},
+    {"_testinternalcapi", PyInit__testinternalcapi},
+    {"_testimportmultiple", PyInit__testimportmultiple},
     {"_thread", PyInit__thread},
     {"time", PyInit_time},
 //    {"_tkinter", PyInit__tkinter},
@@ -316,13 +330,12 @@ struct _inittab _PyImport_Inittab[] = {
     {"_weakref", PyInit__weakref},
 /* Windows {"_winapi", PyInit__winapi}, */
     {"xxlimited", PyInit_xxlimited},
-    {"xxsubtype", PyInit_xxsubtype},
     {"_xxtestfuzz", PyInit__xxtestfuzz},
     {"xx", PyInit_xx},
-    {"zipimport", PyInit_zipimport},
 #if CONFIG_LIBPYTHON3_EXTENSION_ZLIB
     {"zlib", PyInit_zlib},
 #endif
+    {"_zoneinfo", PyInit__zoneinfo},
 /* Unikraft Marker end */
 
     /* Sentinel */

@@ -1,0 +1,26 @@
+From 8108ed2679695de44e237fe8eea2dc5d62fc5482 Mon Sep 17 00:00:00 2001
+From: Andrei Tatar <andrei@unikraft.io>
+Date: Thu, 6 Jul 2023 02:51:55 +0300
+Subject: [PATCH 3/5] Do not compile C files on library install
+
+Signed-off-by: Andrei Tatar <andrei@unikraft.io>
+---
+ Makefile.pre.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile.pre.in b/Makefile.pre.in
+index e0605e3..e416601 100644
+--- a/Makefile.pre.in
++++ b/Makefile.pre.in
+@@ -1529,7 +1529,7 @@ TESTSUBDIRS=	ctypes/test \
+ 		unittest/test unittest/test/testmock
+ 
+ TEST_MODULES=@TEST_MODULES@
+-libinstall:	build_all $(srcdir)/Modules/xxmodule.c
++libinstall:	$(srcdir)/Modules/xxmodule.c
+ 	@for i in $(SCRIPTDIR) $(LIBDEST); \
+ 	do \
+ 		if test ! -d $(DESTDIR)$$i; then \
+-- 
+2.41.0
+

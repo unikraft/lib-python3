@@ -9,18 +9,15 @@ Signed-off-by: Vlad-Andrei Badoiu <vlad_andrei.badoiu@stud.acs.upb.ro>
  1 file changed, 2 deletions(-)
 
 diff --git a/Modules/posixmodule.c b/Modules/posixmodule.c
-index b758e76..aed9e22 100644
+index c0421a9..babcf2b 100644
 --- a/Modules/posixmodule.c
 +++ b/Modules/posixmodule.c
-@@ -175,8 +175,6 @@ corresponding Unix manual entries for more information on calls.");
- #define fsync _commit
- #else
- /* Unix functions that the configure script doesn't check for */
--#define HAVE_EXECV      1
--#define HAVE_FORK       1
- #if defined(__USLC__) && defined(__SCO_VERSION__)       /* SCO UDK Compiler */
- #define HAVE_FORK1      1
- #endif
--- 
-2.20.1
-
+@@ -326,8 +326,6 @@ corresponding Unix manual entries for more information on calls.");
+ #  else
+      /* Unix functions that the configure script doesn't check for */
+ #    ifndef __VXWORKS__
+-#      define HAVE_EXECV      1
+-#      define HAVE_FORK       1
+ #      if defined(__USLC__) && defined(__SCO_VERSION__)       /* SCO UDK Compiler */
+ #        define HAVE_FORK1      1
+ #      endif
