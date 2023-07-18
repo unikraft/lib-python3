@@ -88,5 +88,11 @@ config LIBPYTHON3_EXTENSION_NUMPY
     default y
 endif
 
+if LIBPYTHON_SHAPELY
+config LIBPYTHON3_EXTENSION_SHAPELY
+    bool "Shapely"
+    default y
+endif
+
 endif
 endif

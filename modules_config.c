@@ -186,6 +186,14 @@ extern PyObject* PyInit__umath_tests(void);
 /* Numpy end */
 #endif
 
+#if CONFIG_LIBPYTHON3_EXTENSION_SHAPELY
+/* Shapely */
+extern PyObject* PyInit_lib(void);
+extern PyObject* PyInit__geometry_helpers(void);
+extern PyObject* PyInit__geos(void);
+/* Shapely end */
+#endif
+
 struct _inittab _PyImport_Inittab[] = {
 
     {"posix", PyInit_posix},
@@ -382,6 +390,12 @@ struct _inittab _PyImport_Inittab[] = {
     {"numpy_core__struct_ufunc_tests", PyInit__struct_ufunc_tests},
     {"numpy_linalg__umath_linalg", PyInit__umath_linalg},
     {"numpy_core__umath_tests", PyInit__umath_tests},
+#endif
+
+#if CONFIG_LIBPYTHON3_EXTENSION_SHAPELY
+    {"shapely_lib", PyInit_lib},
+    {"shapely__geometry_helpers", PyInit__geometry_helpers},
+    {"shapely__geos", PyInit__geos},
 #endif
 
     /* Sentinel */
