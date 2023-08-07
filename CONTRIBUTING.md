@@ -1,4 +1,4 @@
-Contributing to Unikraft
-========================
+# Contributing to Unikraft
 
-Please refer to the `CONTRIBUTING.md` file in the main Unikraft repository.
+Contributions to Unikraft are welcome!
+Please refer to the [Contributing](https://unikraft.org/docs/contributing/) page for further information.
