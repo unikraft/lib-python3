@@ -71,7 +71,6 @@ LIBPYTHON3_SRC = $(LIBPYTHON3_ORIGIN)/$(LIBPYTHON3_BASENAME)
 LIBPYTHON3_GLOBAL_INCLUDES-y += -I$(LIBPYTHON3_BASE)/include
 LIBPYTHON3_GLOBAL_INCLUDES-y += -I$(LIBPYTHON3_SRC)/Include
 
-LIBPYTHON3_COMMON_INCLUDES-y += -I$(LIBPYTHON3_SRC)
 LIBPYTHON3_COMMON_INCLUDES-y += -I$(LIBPYTHON3_SRC)/Include/internal
 
 CINCLUDES-$(CONFIG_LIBPYTHON3) += $(LIBPYTHON3_GLOBAL_INCLUDES-y)
@@ -504,8 +503,9 @@ $(PYTHON_ROOTFS)/.keep: $(LIBPYTHON3_BUILD)/.origin
 
 # Configure origin
 $(PYTHON_ROOTFS)/.configured: $(PYTHON_ROOTFS)/.keep
-	mkdir -p $(PYTHON_ROOTFS) &>/dev/null
-	cd $(LIBPYTHON3_SRC) && ./configure --prefix=$(shell realpath $(APP_BASE)/$(path)) && touch $@
+	cd $(LIBPYTHON3_SRC) && ./configure --prefix=$(shell realpath $(APP_BASE)/$(path))
+	rm -f $(LIBPYTHON3_SRC)/pyconfig.h
+	touch $@
 
 # Install Python standard library into virtual environment
 $(PYTHON_ROOTFS)/.done: $(PYTHON_ROOTFS)/.configured
