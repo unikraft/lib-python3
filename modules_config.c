@@ -305,7 +305,7 @@ struct _inittab _PyImport_Inittab[] = {
 //    {"_lzma", PyInit__lzma},
     {"math", PyInit_math},
     {"_md5", PyInit__md5},
-//TODO enable    {"mmap", PyInit_mmap},
+    {"mmap", PyInit_mmap},
     {"_multibytecodec", PyInit__multibytecodec},
 /*    {"_multiprocessing", PyInit__multiprocessing},*/
 /*    {"nis", PyInit_nis},*/
