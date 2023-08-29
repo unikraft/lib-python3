@@ -1,0 +1,29 @@
+From 09b17896ac450cd119401eff5c60a53fbd8abb0e Mon Sep 17 00:00:00 2001
+From: Andrei Tatar <andrei@unikraft.io>
+Date: Thu, 20 Jul 2023 16:09:08 +0200
+Subject: [PATCH 4/4] Ignore failure to load python lib via ctypes
+
+Signed-off-by: Andrei Tatar <andrei@unikraft.io>
+---
+ Lib/ctypes/__init__.py | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/Lib/ctypes/__init__.py b/Lib/ctypes/__init__.py
+index 4afa4ebd42..67f6ad4006 100644
+--- a/Lib/ctypes/__init__.py
++++ b/Lib/ctypes/__init__.py
+@@ -461,7 +461,10 @@ def LoadLibrary(self, name):
+ elif _sys.platform == "cygwin":
+     pythonapi = PyDLL("libpython%d.%d.dll" % _sys.version_info[:2])
+ else:
+-    pythonapi = PyDLL(None)
++    try:
++        pythonapi = PyDLL(None)
++    except OSError:
++        pass
+ 
+ 
+ if _os.name == "nt":
+-- 
+2.41.0
+
