@@ -194,6 +194,18 @@ extern PyObject* PyInit__geos(void);
 /* Shapely end */
 #endif
 
+#if CONFIG_LIBPYTHON3_EXTENSION_PILLOW
+/* Pillow */
+extern PyObject* PyInit__imaging(void);
+extern PyObject* PyInit__imagingcms(void);
+extern PyObject* PyInit__imagingft(void);
+extern PyObject* PyInit__imagingmath(void);
+extern PyObject* PyInit__imagingmorph(void);
+extern PyObject* PyInit__imagingtk(void);
+extern PyObject* PyInit__webp(void);
+/* Pillow end */
+#endif
+
 struct _inittab _PyImport_Inittab[] = {
 
     {"posix", PyInit_posix},
@@ -396,6 +408,22 @@ struct _inittab _PyImport_Inittab[] = {
     {"shapely_lib", PyInit_lib},
     {"shapely__geometry_helpers", PyInit__geometry_helpers},
     {"shapely__geos", PyInit__geos},
+#endif
+
+#if CONFIG_LIBPYTHON3_EXTENSION_PILLOW
+    {"PIL__imaging", PyInit__imaging},
+#if CONFIG_LIBLITTLECMS
+    {"PIL__imagingcms", PyInit__imagingcms},
+#endif
+#if CONFIG_LIBFREETYPE
+    {"PIL__imagingft", PyInit__imagingft},
+#endif
+    {"PIL__imagingmath", PyInit__imagingmath},
+    {"PIL__imagingmorph", PyInit__imagingmorph},
+    {"PIL__imagingtk", PyInit__imagingtk},
+#if CONFIG_LIBWEBP
+    {"PIL__webp", PyInit__webp},
+#endif
 #endif
 
     /* Sentinel */
