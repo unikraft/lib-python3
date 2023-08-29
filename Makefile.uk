@@ -89,8 +89,10 @@ LIBPYTHON3_SUPPRESS_FLAGS-y += -Wno-missing-field-initializers
 LIBPYTHON3_SUPPRESS_FLAGS-y += -Wno-implicit-fallthrough
 LIBPYTHON3_SUPPRESS_FLAGS-y += -Wno-char-subscripts
 LIBPYTHON3_SUPPRESS_FLAGS-y += -Wno-sign-compare
+LIBPYTHON3_SUPPRESS_FLAGS-$(call have_gcc) += -Wno-address
 LIBPYTHON3_SUPPRESS_FLAGS-$(call have_gcc) += -Wno-stringop-truncation
 LIBPYTHON3_SUPPRESS_FLAGS-$(call have_gcc) += -Wno-maybe-uninitialized
+LIBPYTHON3_SUPPRESS_FLAGS-$(call have_clang) += -Wno-tautological-pointer-compare
 LIBPYTHON3_SUPPRESS_FLAGS-$(call have_clang) += -Wno-documentation-unknown-command
 LIBPYTHON3_SUPPRESS_FLAGS-$(call clang_version_ge,13,0) += -Wno-cast-function-type
 
