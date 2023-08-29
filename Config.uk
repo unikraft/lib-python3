@@ -94,5 +94,11 @@ config LIBPYTHON3_EXTENSION_SHAPELY
     default y
 endif
 
+if LIBPYTHON_PILLOW
+config LIBPYTHON3_EXTENSION_PILLOW
+    bool "Pillow"
+    default y
+endif
+
 endif
 endif
