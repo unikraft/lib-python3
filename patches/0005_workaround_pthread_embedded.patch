@@ -1,0 +1,44 @@
+From fe7c24ccde424aa21d20a6da3546e8a447dd85d7 Mon Sep 17 00:00:00 2001
+From: Salar Samani <soltanisamani@gmail.com>
+Date: Tue, 29 Jul 2025 02:14:48 +0200
+Subject: [PATCH] workaround pthread_embedded pthread_t type
+
+---
+ Python/thread_pthread.h | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/Python/thread_pthread.h b/Python/thread_pthread.h
+index 35b9810aa37..a7976837ae4 100644
+--- a/Python/thread_pthread.h
++++ b/Python/thread_pthread.h
+@@ -325,6 +325,19 @@ PyThread_start_new_thread(void (*func)(void *), void *arg)
+      - The cast to unsigned long is inherently unsafe.
+      - It is not clear that the 'volatile' (for AIX?) are any longer necessary.
+ */
++#ifdef WORKAROUND_PTHREAD_EMBEDDED
++unsigned long
++PyThread_get_thread_ident(void)
++{
++    volatile pthread_t threadid;
++    uintptr_t tid;
++    if (!initialized)
++        PyThread_init_thread();
++    threadid = pthread_self();
++    memcpy(&tid, &threadid, sizeof(tid));
++    return (unsigned long) tid;
++}
++#else
+ unsigned long
+ PyThread_get_thread_ident(void)
+ {
+@@ -334,6 +347,7 @@ PyThread_get_thread_ident(void)
+     threadid = pthread_self();
+     return (unsigned long) threadid;
+ }
++#endif /*WORKAROUND_PTHREAD_EMBEDDED*/
+ 
+ #ifdef PY_HAVE_THREAD_NATIVE_ID
+ unsigned long
+-- 
+2.43.0
+

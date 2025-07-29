@@ -109,6 +109,8 @@ LIBPYTHON3_COMMON_DEFINES-y  += -DNDEBUG
 LIBPYTHON3_COMMON_CFLAGS-y   += $(LIBPYTHON3_COMMON_DEFINES-y)
 LIBPYTHON3_COMMON_CXXFLAGS-y += $(LIBPYTHON3_COMMON_DEFINES-y)
 
+LIBPYTHON#_COMMON_CFLAGS-y += -DWORKAROUND_PTHREAD_EMBEDDED
+
 ################################################################################
 # Glue code
 ################################################################################
