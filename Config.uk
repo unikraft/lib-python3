@@ -24,11 +24,11 @@ if LIBPYTHON3
 
 config LIBPYTHON3_PYTHONHOME
 	string "Python home directory"
-	default "/lib/python3.10"
+	default "/lib/python3.13"
 
 config LIBPYTHON3_PYTHONPATH
 	string "Python path"
-	default "/lib/python3.10"
+	default "/lib/python3.13"
 
 config LIBPYTHON3_TMPDIR
 	string "Temp directory location"

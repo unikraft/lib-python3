@@ -1,0 +1,32 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Radu Andrei Tudorica <raduandreitudorica3@gmail.com>
+Date: Tue, 14 Jul 2026 13:00:00 +0300
+Subject: [PATCH 5/5] Avoid Py_ARRAY_LENGTH in a static initializer
+
+Py_ARRAY_LENGTH expands to an expression containing Py_BUILD_ASSERT_EXPR,
+which under C11 is a comma expression: ((void)sizeof(...), 0).
+GCC does not accept that as a constant expression in a static
+initializer, so faulthandler.c fails to compile with:
+
+  error: initializer element is not constant
+
+Compute the array length directly instead, which is what the macro
+reduces to on compilers without the GNU extensions.
+
+Signed-off-by: Radu Andrei Tudorica <raduandreitudorica3@gmail.com>
+---
+ Modules/faulthandler.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Modules/faulthandler.c b/Modules/faulthandler.c
+--- a/Modules/faulthandler.c
++++ b/Modules/faulthandler.c
+@@ -83,7 +83,7 @@
+     {SIGSEGV, 0, "Segmentation fault", }
+ };
+ static const size_t faulthandler_nsignals = \
+-    Py_ARRAY_LENGTH(faulthandler_handlers);
++    sizeof(faulthandler_handlers) / sizeof(faulthandler_handlers[0]);
+ 
+ #ifdef FAULTHANDLER_USE_ALT_STACK
+ #  define stack _PyRuntime.faulthandler.stack
