@@ -9,18 +9,13 @@ Signed-off-by: Andrei Tatar <andrei@unikraft.io>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/Makefile.pre.in b/Makefile.pre.in
-index e0605e3..e416601 100644
 --- a/Makefile.pre.in
 +++ b/Makefile.pre.in
-@@ -1529,7 +1529,7 @@ TESTSUBDIRS=	ctypes/test \
- 		unittest/test unittest/test/testmock
+@@ -2493,7 +2493,7 @@ TEST_MODULES=@TEST_MODULES@
  
- TEST_MODULES=@TEST_MODULES@
--libinstall:	build_all $(srcdir)/Modules/xxmodule.c
+ .PHONY: libinstall
+-libinstall:	all $(srcdir)/Modules/xxmodule.c
 +libinstall:	$(srcdir)/Modules/xxmodule.c
  	@for i in $(SCRIPTDIR) $(LIBDEST); \
  	do \
  		if test ! -d $(DESTDIR)$$i; then \
--- 
-2.41.0
-

@@ -119,9 +119,8 @@ extern PyObject* PyInit_resource(void);
 extern PyObject* PyInit__scproxy(void);
 extern PyObject* PyInit_select(void);
 extern PyObject* PyInit__sha1(void);
-extern PyObject* PyInit__sha256(void);
+extern PyObject* PyInit__sha2(void);
 extern PyObject* PyInit__sha3(void);
-extern PyObject* PyInit__sha512(void);
 extern PyObject* PyInit__signal(void);
 extern PyObject* PyInit__socket(void);
 extern PyObject* PyInit_spwd(void);
@@ -135,8 +134,6 @@ extern PyObject* PyInit__symtable(void);
 extern PyObject* PyInit_syslog(void);
 extern PyObject* PyInit_termios(void);
 extern PyObject* PyInit__testbuffer(void);
-extern PyObject* PyInit__testcapi(void);
-extern PyObject* PyInit__testinternalcapi(void);
 extern PyObject* PyInit__testimportmultiple(void);
 extern PyObject* PyInit__thread(void);
 extern PyObject* PyInit_time(void);
@@ -339,9 +336,8 @@ struct _inittab _PyImport_Inittab[] = {
 /* iOS {"_scproxy", PyInit__scproxy}, */
     {"select", PyInit_select},
     {"_sha1", PyInit__sha1},
-    {"_sha256", PyInit__sha256},
+    {"_sha2", PyInit__sha2},
     {"_sha3", PyInit__sha3},
-    {"_sha512", PyInit__sha512},
     {"_signal", PyInit__signal},
     {"_socket", PyInit__socket},
 //TODO enable    {"spwd", PyInit_spwd},
@@ -360,8 +356,6 @@ struct _inittab _PyImport_Inittab[] = {
     {"syslog", PyInit_syslog},
 //    {"termios", PyInit_termios},
     {"_testbuffer", PyInit__testbuffer},
-    {"_testcapi", PyInit__testcapi},
-    {"_testinternalcapi", PyInit__testinternalcapi},
     {"_testimportmultiple", PyInit__testimportmultiple},
     {"_thread", PyInit__thread},
     {"time", PyInit_time},
